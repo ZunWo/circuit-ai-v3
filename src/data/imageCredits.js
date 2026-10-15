@@ -1,0 +1,286 @@
+// Photo metadata from Wikimedia Commons, verified before download.
+// Each photograph retains its own license; the application source is separate.
+export const imageCredits = Object.freeze({
+  resistor: {
+    title: "File:Electronic-Axial-Lead-Resistors-Array.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Electronic-Axial-Lead-Resistors-Array.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Electronic-Axial-Lead-Resistors-Array.jpg/960px-Electronic-Axial-Lead-Resistors-Array.jpg",
+    author: "Evan-Amos",
+    license: "Public domain",
+    licenseUrl: "https://commons.wikimedia.org/wiki/Commons:Licensing",
+    description:
+      "An array of axial-lead resistors of varying resistance. From left to right: 39 kΩ, 47 Ω, 1.5 kΩ, 100 Ω, 2.2 kΩ and 47 kΩ. All resistors have tolerance 5% (the gold band). Maximum power dissipation is most likely 0.25 W.",
+    width: 3000,
+    height: 2100,
+    mime: "image/jpeg",
+    image: "/images/components/resistor.jpg",
+  },
+  "film-capacitor": {
+    title: "File:Epcos boxed film capacitor 03.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Epcos_boxed_film_capacitor_03.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Epcos_boxed_film_capacitor_03.jpg/960px-Epcos_boxed_film_capacitor_03.jpg",
+    author: "Retired electrician",
+    license: "CC0",
+    licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    description: "Epcos boxed film capacitor",
+    width: 1426,
+    height: 1426,
+    mime: "image/jpeg",
+    image: "/images/components/film-capacitor.jpg",
+  },
+  diode: {
+    title: "File:Diode 1n4148.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:Diode_1n4148.jpg",
+    download:
+      "https://upload.wikimedia.org/wikipedia/commons/f/f2/Diode_1n4148.jpg",
+    author: "Vonvon",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0",
+    description: "Three diodes 1N4148. (The ruler scale is in mm.)",
+    width: 912,
+    height: 373,
+    mime: "image/jpeg",
+    image: "/images/components/diode.jpg",
+  },
+  "ir-led-photo-transistor": {
+    title: "File:Fototranzystor.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:Fototranzystor.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Fototranzystor.jpg/960px-Fototranzystor.jpg",
+    author: "Paweł Wiesław Kaczorowski",
+    license: "CC BY-SA 2.5",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/2.5",
+    description: "Fototransistor",
+    width: 2048,
+    height: 1536,
+    mime: "image/jpeg",
+    image: "/images/components/ir-led-photo-transistor.jpg",
+    caption: "Photo transistor (ภาพตัวอย่าง)",
+  },
+  "ir-led": {
+    title: "File:Remote infrared.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:Remote_infrared.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/Remote_infrared.jpg/960px-Remote_infrared.jpg",
+    author: "Peter Hebels",
+    license: "Public domain",
+    licenseUrl: "https://commons.wikimedia.org/wiki/Commons:Licensing",
+    description: "Infrared LED inside a remote control",
+    width: 2952,
+    height: 2184,
+    mime: "image/jpeg",
+    image: "/images/components/ir-led.jpg",
+    caption: "IR LED ในรีโมต (ภาพตัวอย่าง)",
+  },
+  switch: {
+    title: "File:5 x Pushbuttons.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:5_x_Pushbuttons.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/24/5_x_Pushbuttons.jpg/960px-5_x_Pushbuttons.jpg",
+    author: "oomlout",
+    license: "CC BY-SA 2.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0",
+    description: "5 x Pushbuttons.",
+    width: 2621,
+    height: 1750,
+    mime: "image/jpeg",
+    image: "/images/components/switch.jpg",
+  },
+  photoresistor: {
+    title: "File:LDR 1480405 6 7 HDR Enhancer 1.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:LDR_1480405_6_7_HDR_Enhancer_1.jpg",
+    download:
+      "https://upload.wikimedia.org/wikipedia/commons/b/bb/LDR_1480405_6_7_HDR_Enhancer_1.jpg",
+    author: "Nevit Dilmen (talk)",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0",
+    description: "Photoresistor - LDR",
+    width: 745,
+    height: 745,
+    mime: "image/jpeg",
+    image: "/images/components/photoresistor.jpg",
+  },
+  buzzer: {
+    title: "File:Cjam-piezo-buzzer.png",
+    source: "https://commons.wikimedia.org/wiki/File:Cjam-piezo-buzzer.png",
+    download:
+      "https://upload.wikimedia.org/wikipedia/commons/e/e4/Cjam-piezo-buzzer.png",
+    author: "Andy Oakley",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0",
+    description: "A piezo buzzer",
+    width: 125,
+    height: 173,
+    mime: "image/png",
+    image: "/images/components/buzzer.png",
+  },
+  thermistor: {
+    title: "File:Termistor perla.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:Termistor_perla.jpg",
+    download:
+      "https://upload.wikimedia.org/wikipedia/commons/b/b4/Termistor_perla.jpg",
+    author: "José Carlos González Sánchez",
+    license: "Public domain",
+    licenseUrl: "https://commons.wikimedia.org/wiki/Commons:Licensing",
+    description:
+      "Varios ejemplos de termistores con encapsulado tipo perla (bead)",
+    width: 191,
+    height: 166,
+    mime: "image/jpeg",
+    image: "/images/components/thermistor.jpg",
+  },
+  multimeter: {
+    title: "File:2017 Cyfrowy miernik uniwersalny.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:2017_Cyfrowy_miernik_uniwersalny.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/2017_Cyfrowy_miernik_uniwersalny.jpg/960px-2017_Cyfrowy_miernik_uniwersalny.jpg",
+    author: "Jacek Halicki",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0",
+    description: "UNI-T UT33B digital multimeter",
+    width: 3882,
+    height: 2794,
+    mime: "image/jpeg",
+    image: "/images/equipment/multimeter.jpg",
+  },
+  oscilloscope: {
+    title: "File:Digital oscilloscope in use.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Digital_oscilloscope_in_use.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Digital_oscilloscope_in_use.jpg/960px-Digital_oscilloscope_in_use.jpg",
+    author: "Radarvector",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0",
+    description: "Digital 4-channel oscilloscope in operation",
+    width: 3024,
+    height: 3484,
+    mime: "image/jpeg",
+    image: "/images/equipment/oscilloscope.jpg",
+  },
+  "function-generator": {
+    title: "File:Function Generator FG100.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Function_Generator_FG100.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Function_Generator_FG100.jpg/960px-Function_Generator_FG100.jpg",
+    author: "Anselm Schüler",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0",
+    description:
+      "Function Generator FG100 — Device for generating alternating current",
+    width: 4032,
+    height: 3024,
+    mime: "image/jpeg",
+    image: "/images/equipment/function-generator.jpg",
+  },
+  "ceramic-capacitor": {
+    title: "File:Electronic-Component-Ceramic-Capacitor.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Electronic-Component-Ceramic-Capacitor.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Electronic-Component-Ceramic-Capacitor.jpg/960px-Electronic-Component-Ceramic-Capacitor.jpg",
+    author: "Evan-Amos",
+    license: "Public domain",
+    licenseUrl: "https://commons.wikimedia.org/wiki/Commons:Licensing",
+    description:
+      "A small ceramic capacitor, a standard component in building electronic devices.",
+    width: 2250,
+    height: 2250,
+    mime: "image/jpeg",
+    image: "/images/components/ceramic-capacitor.jpg",
+  },
+  "electrolytic-capacitor": {
+    title: "File:Electronic component electrolytic capacitors.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Electronic_component_electrolytic_capacitors.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Electronic_component_electrolytic_capacitors.jpg/960px-Electronic_component_electrolytic_capacitors.jpg",
+    author: "FDominec",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+    description: "A selection of electrolytic capacitors.",
+    width: 1248,
+    height: 1311,
+    mime: "image/jpeg",
+    image: "/images/components/electrolytic-capacitor.jpg",
+  },
+  "seven-segment": {
+    title: "File:7 Segment Display2.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:7_Segment_Display2.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/7_Segment_Display2.jpg/960px-7_Segment_Display2.jpg",
+    author: "Haragayato",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+    description: "7 Segment Display.",
+    width: 1078,
+    height: 789,
+    mime: "image/jpeg",
+    image: "/images/components/seven-segment.jpg",
+  },
+  transistor: {
+    title: "File:Transistors.agr.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:Transistors.agr.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Transistors.agr.jpg/960px-Transistors.agr.jpg",
+    author: "ArnoldReinhold",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/",
+    description:
+      "Several thru-hole w:transistors. I took this picture of artifacts from my personal collection. --agr 20:35, 11 November 2005 (UTC)",
+    width: 1289,
+    height: 1081,
+    mime: "image/jpeg",
+    image: "/images/components/transistor.jpg",
+  },
+  led: {
+    title: "File:LEDs.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:LEDs.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/LEDs.jpg/960px-LEDs.jpg",
+    author: "Afrank99",
+    license: "CC BY-SA 2.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/2.0",
+    description: "5mm LEDs in different colors.",
+    width: 2336,
+    height: 3520,
+    mime: "image/jpeg",
+    image: "/images/components/led.jpg",
+  },
+  potentiometer: {
+    title: "File:Potentiometer.jpg",
+    source: "https://commons.wikimedia.org/wiki/File:Potentiometer.jpg",
+    download:
+      "https://upload.wikimedia.org/wikipedia/commons/b/b5/Potentiometer.jpg",
+    author: "Iainf",
+    license: "CC BY 2.5",
+    licenseUrl: "https://creativecommons.org/licenses/by/2.5",
+    description: "A potentiometer",
+    width: 888,
+    height: 1040,
+    mime: "image/jpeg",
+    image: "/images/components/potentiometer.jpg",
+  },
+  "power-supply": {
+    title: "File:Instek PST3202 DC Power Supply.jpg",
+    source:
+      "https://commons.wikimedia.org/wiki/File:Instek_PST3202_DC_Power_Supply.jpg",
+    download:
+      "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Instek_PST3202_DC_Power_Supply.jpg/960px-Instek_PST3202_DC_Power_Supply.jpg",
+    author: "Whiteknight",
+    license: "CC BY-SA 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/4.0",
+    description: "Instek PST-3202 DC power supply front panel",
+    width: 3072,
+    height: 2304,
+    mime: "image/jpeg",
+    image: "/images/equipment/power-supply.jpg",
+  },
+});

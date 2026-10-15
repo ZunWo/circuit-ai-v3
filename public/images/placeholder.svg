@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">
+  <rect width="480" height="320" rx="20" fill="#f8fafc"/>
+  <rect x="208" y="112" width="64" height="56" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+  <circle cx="226" cy="129" r="5" fill="#cbd5e1"/>
+  <path d="m214 159 16-15 12 11 11-9 13 13" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-linejoin="round"/>
+  <text x="240" y="204" font-family="Tahoma,sans-serif" font-size="12" fill="#94a3b8" text-anchor="middle">IMAGE PLACEHOLDER</text>
+</svg>
+

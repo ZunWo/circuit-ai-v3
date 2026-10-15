@@ -1,0 +1,143 @@
+# คู่มือเตรียมและเชื่อมต่อโมเดล CircuitAI
+
+สถานะปัจจุบัน: เชื่อมโมเดลที่ผู้ใช้ให้ `https://teachablemachine.withgoogle.com/models/mZNDylZHP/` ผ่าน `.env.local` แล้ว โหลดและทดสอบ runtime/Analyze ในเว็บสำเร็จด้วยภาพสังเคราะห์ ยังไม่มี Dataset หรือชุดภาพชิ้นส่วนที่มีคำตอบจริง จึงยังไม่ยืนยันความแม่นยำของ AI
+
+ผู้ใช้อนุมัติ mapping ชื่อคลาสเดิมของโมเดลกับหมวดบนเว็บ ดูตารางใน README และ configuration ใน `src/config/aiConfig.js` โมเดลนี้ฝึก `phototransistor` เฉพาะ Photo transistor ไม่รวม IR LED เว็บแจ้งข้อจำกัดไว้ การใช้ alias ไม่ได้เพิ่มความสามารถให้โมเดล
+
+## 1. เตรียมภาพและชื่อคลาส
+
+เปิด [Teachable Machine](https://teachablemachine.withgoogle.com/) เลือก Get Started → Image Project → Standard Image Model ตั้งชื่อคลาสให้ตรงทั้งตัวพิมพ์ ช่องว่าง เครื่องหมาย และตัวสะกดดังนี้:
+
+```text
+Resistor
+C Ceramic
+C Film
+C Electrolytic
+Diode
+Transistor
+LED
+IR LED / Photo transistor
+Switch
+Photoresistor
+7-Segment
+Potentiometer
+Buzzer
+Thermistor
+```
+
+IR LED และ Photo transistor อยู่ในคลาสเดียวกันตาม Scope ต้องมีตัวอย่างทั้งตัวส่งและตัวรับในชุดฝึกและชุดทดสอบ แต่ผลจำแนกนี้ไม่สามารถระบุได้ว่าภาพเป็นตัวส่งหรือตัวรับ ห้ามเพิ่ม Multimeter, Power Supply, Oscilloscope หรือ Function Generator ในชุด 14 คลาสนี้
+
+## 2. การเก็บ Dataset
+
+- ใช้ภาพที่ถ่ายเองหรือได้รับสิทธิ์ มีชิ้นส่วนหลักหนึ่งชิ้นต่อภาพและชื่อคลาสที่ตรวจจากอุปกรณ์จริง
+- เก็บหลายชิ้นงาน/รุ่นต่อคลาส หลายมุม ระยะ แสง พื้นหลัง และกล้อง อย่าใช้พื้นหลังหรืออุปกรณ์ถ่ายเฉพาะคลาสจนโมเดลจำสิ่งเหล่านั้นแทนชิ้นส่วน
+- เน้นเห็นตัวถังและขาโดยวางอุปกรณ์ใกล้กลางภาพ เพราะ Teachable Machine image helper ใช้ center crop เป็นสี่เหลี่ยมก่อนย่อภาพ
+- ตั้งจำนวนภาพแต่ละคลาสให้ใกล้เคียงกันและครอบคลุมความหลากหลาย จำนวนที่เพียงพอต้องประเมินจากข้อมูลจริง ไม่รับประกันความแม่นยำจากจำนวนภาพอย่างเดียว
+- ไม่ต้องเปิด webcam ภายใน CircuitAI สามารถใช้ไฟล์ภาพในการฝึกและทดสอบได้
+- ตัดภาพเสีย ภาพซ้ำ ภาพที่มีหลายชิ้นส่วน และภาพที่ป้ายกำกับไม่แน่นอนออกจากชุดประเมินหลัก
+
+โครงสร้าง Dataset ภายนอกโครงการเว็บที่แนะนำ:
+
+```text
+dataset/
+  train/<ชื่อคลาส>/...
+  development/<ชื่อคลาส>/...
+  test/<ชื่อคลาส>/...
+```
+
+แยกตามชิ้นงานจริงหรือรอบการถ่าย ไม่ใช่สุ่มแยกภาพติดกันของชิ้นเดียวกันข้ามชุด ตัวอย่างสัดส่วนเริ่มต้น 70% ฝึก, 15% development และ 15% ทดสอบอิสระ ปรับตามข้อมูลที่มี และต้องมีทุกคลาสในแต่ละชุด
+
+เก็บ `test` ไว้ไม่ให้ใช้ฝึกหรือปรับ threshold การแบ่ง validation ภายใน Teachable Machine ไม่แทนชุดทดสอบอิสระนี้
+
+## 3. ฝึกและตรวจระหว่างพัฒนา
+
+1. เพิ่มคลาสครบ 14 ชื่อใน Standard Image Project
+2. อัปโหลดเฉพาะภาพจากชุด `train` ลงแต่ละคลาส ตรวจจำนวนและ label
+3. เริ่ม Train Model และปล่อยหน้าเว็บทำงานจนเสร็จ
+4. ใช้ภาพจากชุด `development` ตรวจการสับสนระหว่างคลาสและความไวต่อมุม/แสง อย่านำชุด `test` มาเลือกโมเดล
+5. หากพบปัญหา ให้เพิ่มหรือแก้ข้อมูลฝึกอย่างมีเหตุผลแล้วฝึกใหม่ บันทึกเวอร์ชันโมเดลกับชุดข้อมูลที่ใช้
+6. Export หลังเลือกโมเดลแล้ว ห้ามรายงานว่าฝึกสำเร็จหากยังไม่ได้ทำขั้นตอนจริง
+
+ขั้นตอนฝึกและ Export อาจต้องดำเนินการด้วยตนเองใน Teachable Machine
+
+## 4. Export และเลือกวิธีเชื่อม
+
+เลือก Export Model → TensorFlow.js แล้วเลือก Upload my model เพื่อรับ URL ของโมเดลที่คุณฝึก หรือ Download เพื่อเก็บไฟล์
+
+การเปิดให้ browser โหลดโมเดลทำให้ผู้ใช้ดาวน์โหลดโมเดลได้ จึงไม่เหมาะสำหรับน้ำหนักโมเดลที่ต้องเก็บเป็นความลับ
+
+### แบบ Hosted URL
+
+สร้าง `.env.local` ในโฟลเดอร์ `circuit-ai-v2` โดยอ้างอิง `.env.example`:
+
+```dotenv
+VITE_TM_MODEL_URL=https://teachablemachine.withgoogle.com/models/YOUR_MODEL_ID/
+VITE_AI_CONFIDENCE_THRESHOLD=0.7
+```
+
+`YOUR_MODEL_ID` เป็น placeholder ต้องแทนด้วยโมเดลของคุณเอง ไม่ใช่ URL ที่ใช้งานได้จริง ห้ามใช้โมเดลของโครงการอื่นแทนโมเดล production
+
+URL ต้องเข้าถึง `model.json`, `metadata.json` และ weights ที่อ้างถึงได้ ถ้าใช้ที่เก็บอื่น ต้องรองรับ CORS ให้ browser โหลดไฟล์ได้ ใช้ HTTPS เมื่อเว็บไซต์เปิดผ่าน HTTPS
+
+### แบบไฟล์ Static ในโครงการ
+
+วางไฟล์ที่ Export จริงไว้ดังนี้ (weights อาจมีหลายไฟล์ ให้รักษาพาธตาม `model.json`):
+
+```text
+public/models/my-model/
+  model.json
+  metadata.json
+  weights.bin
+```
+
+ตั้งค่า:
+
+```dotenv
+VITE_TM_MODEL_URL=/models/my-model/
+```
+
+อย่าเพิ่ม `public` เข้าไปใน URL และอย่าเปิดเว็บไซต์ด้วย `file://` ให้รันผ่าน Vite หรือ static HTTP hosting
+
+หลังเปลี่ยน `.env.local` ต้องหยุดและเริ่ม `npm.cmd run dev` ใหม่ เมื่อใช้ build production ต้อง `npm.cmd run build` ใหม่เพราะ Vite แทนค่า environment ตอน build ค่า `VITE_*` เปิดเผยใน browser ห้ามใส่รหัสผ่านหรือ secret API key
+
+## 5. ทดสอบการเชื่อมต่อจริง
+
+1. เปิดหน้า AI Recognition ตรวจว่า Loading Model เปลี่ยนเป็น Model Ready จริง
+2. ถ้าโหลดไม่ได้ ตรวจ URL, HTTP status, CORS, metadata และ weights รวมถึงความเข้ากันได้ของโมเดล
+3. ระบบต้องตรวจชื่อทั้ง 14 คลาสให้ครบ ไม่ซ้ำ และไม่มีชื่อเกิน หากมี error ให้แก้ metadata/โมเดลต้นทางแล้ว Export ใหม่ ไม่เปลี่ยนชื่อโดยเดา
+4. อัปโหลดภาพทดสอบที่อ่านได้ กด Analyze Image ตรวจว่าป้ายเป็นผลจากโมเดลจริง ไม่ใช่ Demo
+5. ตรวจชื่อไทย/อังกฤษ mapping และคะแนนทั้ง 14 คลาส ซึ่งต้องมาจาก `model.predict(imageElement)`
+6. เปลี่ยนภาพ ตรวจว่าผลเดิมหาย จากนั้นวิเคราะห์ซ้ำหลายครั้ง ทดสอบภาพคะแนนต่ำและกรณีภาพอ่านไม่ได้
+7. ทดสอบ desktop และมือถือจริง ระบุ browser อุปกรณ์ ระยะเวลาโหลด และเวอร์ชันโมเดลที่ตรวจ
+
+## 6. Accuracy และ Confusion Matrix
+
+ใช้ชุด `test` ที่มีคำตอบจริงและไม่เคยใช้ฝึกหรือเลือกโมเดล บันทึกต่อภาพใน spreadsheet/CSV:
+
+```csv
+filename,true_label,predicted_label,top_probability,model_version
+```
+
+ไม่เติมแถวด้วยผลสมมติ ให้กรอกผลจาก Analyze จริง หากต้องบันทึก probability ทุกคลาส สามารถเพิ่มอีก 14 คอลัมน์ตามชื่อคลาส
+
+- Accuracy = จำนวนภาพที่ top-1 label ถูกต้อง / จำนวนภาพทดสอบทั้งหมด × 100
+- สร้างตาราง 14 × 14 โดย **แถว = true label** และ **คอลัมน์ = predicted label** เพิ่มจำนวนที่ช่องตรงกับผลของแต่ละภาพ
+- ค่าบนแนวทแยงคือการทายถูก ช่องอื่นคือคู่คลาสที่สับสน
+- รายงานจำนวนภาพต่อคลาสและ Recall ต่อคลาส = ช่องทายถูกของคลาส / ผลรวมแถวนั้น
+- Precision ต่อคลาส = ช่องทายถูกของคลาส / ผลรวมคอลัมน์นั้น ถ้าตัวหารเป็นศูนย์ให้รายงาน N/A พร้อมสาเหตุ
+- บันทึกทั้งคะแนน top-1 และกลุ่มคะแนนต่ำ อย่าลบภาพที่ผิดหรือคะแนนต่ำออกเพื่อทำให้ Accuracy สูงขึ้น
+- ใช้ development set เลือก threshold; ประเมิน test set หลังล็อก threshold แล้ว รายงานสัดส่วนภาพที่เตือนคะแนนต่ำและ Accuracy ของทั้งชุดแยกกัน
+
+70% เป็นเกณฑ์เริ่มต้นสำหรับ UI ไม่ใช่มาตรฐานความแม่นยำ คะแนน Softmax สูงอาจทายผิด โดยเฉพาะภาพนอก 14 คลาส โมเดลนี้ไม่มี Unknown class และไม่ได้ตรวจจำนวนวัตถุในภาพ
+
+## 7. สิ่งที่ยังต้องได้รับและทำจริง
+
+- Dataset ที่มี label ตรวจสอบแล้วและหลากหลายพอสำหรับแต่ละคลาส
+- โมเดลที่ฝึกแล้ว: URL หรือไฟล์ model.json, metadata.json และ weights ครบ
+- ชุดภาพทดสอบอิสระพร้อม true label เพื่อประเมินครบ 14 คลาส
+- ผลทดสอบจริงและการยอมรับคุณภาพตามวัตถุประสงค์ใช้งาน
+
+ขณะนี้ได้รับโมเดลและตรวจการเชื่อมต่อแล้ว ส่วน Dataset และการประเมินด้วยภาพชิ้นส่วนที่มีคำตอบจริงยังรอผู้ใช้ ไม่มีตัวเลข Accuracy ที่ยืนยันแล้ว และไม่ได้อ้างว่าโมเดลครอบคลุม IR LED
+
+อ้างอิง API และการ Export: [Teachable Machine Image library](https://github.com/googlecreativelab/teachablemachine-community/blob/master/libraries/image/README.md), [TensorFlow.js browser runtime](https://www.tensorflow.org/js/guide/platform_environment), [Vite environment variables](https://vite.dev/guide/env-and-mode)
+
