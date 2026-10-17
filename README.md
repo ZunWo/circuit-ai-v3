@@ -22,7 +22,7 @@ React SPA ใช้ React Router ครบ 3 หน้าหลัก: `/`, `/co
 ## โครงสร้างไฟล์
 
 ```text
-circuit-ai-v2/
+circuit-ai-v3/
 ├── public/
 │   ├── images/           # components/, equipment/, credits.html และ placeholder.svg
 │   ├── theme.js          # ใช้โหมดที่บันทึกไว้ก่อนแสดงหน้าเว็บ
@@ -115,7 +115,7 @@ TensorFlow.js 1.3.1 เป็น runtime เก่าที่ TM helper ระ�
 ต้องมี Node.js `^20.19.0` หรือ `>=22.12.0` เครื่องที่พัฒนาใช้ `24.16.0` และ npm `11.13.0`
 
 ```powershell
-cd circuit-ai-v2-main
+cd circuit-ai-v3-main
 npm.cmd ci
 npm.cmd run dev
 ```
