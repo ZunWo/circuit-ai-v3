@@ -37,8 +37,10 @@ export function useRecognition() {
   useEffect(() => {
     if (!aiConfig.modelUrl) return;
     let active = true;
-    setModelState({ status: "loading", error: "" });
-    loadModel(aiConfig.modelUrl)
+    setModelState({ status: "loading", error: "", progress: null });
+    loadModel(aiConfig.modelUrl, (progress) => {
+      if (active) setModelState({ status: "loading", error: "", progress });
+    })
       .then((model) => {
         if (!active) return;
         modelRef.current = model;
@@ -78,6 +80,11 @@ export function useRecognition() {
       const id = ++requestId.current;
       setPredictionState({ status: "analyzing", result: null, error: "" });
       try {
+        // Let the loading dialog paint before synchronous TensorFlow work starts.
+        await new Promise((resolve) =>
+          requestAnimationFrame(() => setTimeout(resolve, 0)),
+        );
+        if (!mountedRef.current || id !== requestId.current) return;
         const image = await decodeImage(upload.url);
         const result = await predictImage(modelRef.current, image);
         if (mountedRef.current && id === requestId.current)

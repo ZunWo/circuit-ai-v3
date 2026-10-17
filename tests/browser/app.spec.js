@@ -37,6 +37,8 @@ test("routes, active navigation, library search, details and all equipment guide
     .click();
   await expect(page.locator("#component-detail-title")).toHaveText("Resistor");
   await expect(page).toHaveURL(/component=resistor/);
+  await page.getByRole("button", { name: "ปิดรายละเอียดชิ้นส่วน" }).click();
+  await expect(page.locator("#component-details")).toHaveCount(0);
   await page.getByRole("searchbox").fill("no-such-component");
   await expect(page.getByText("ไม่พบชิ้นส่วนที่ค้นหา")).toBeVisible();
   await page.getByRole("button", { name: "แสดงชิ้นส่วนทั้งหมด" }).click();
@@ -283,7 +285,7 @@ test("keyboard skip link and page screenshots", async ({ page }, testInfo) => {
   });
 });
 
-test("prediction component renders loading, errors and low-confidence ranking with explicit test fixtures", async ({
+test("prediction component renders loading, errors and rejects low-confidence fixtures", async ({
   page,
 }) => {
   await page.goto("/");
@@ -322,9 +324,9 @@ test("prediction component renders loading, errors and low-confidence ranking wi
       error: "",
     }),
   );
-  await expect(
-    fixture.getByText("Demo / Sample Data", { exact: true }),
-  ).toBeVisible();
-  await expect(fixture.getByRole("status")).toContainText("คะแนนต่ำกว่า 70%");
-  await expect(fixture.locator(".probabilities li")).toHaveCount(14);
+  await expect(fixture.getByRole("alert")).toContainText(
+    "กรุณาเช็คแสงและความชัดเจนของรูปภาพ",
+  );
+  await expect(fixture.locator(".prediction-top")).toHaveCount(0);
+  await expect(fixture.locator(".probabilities li")).toHaveCount(0);
 });

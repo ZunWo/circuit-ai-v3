@@ -1,7 +1,8 @@
 import { componentByLabel, expectedLabels } from "../data/components.js";
-import { modelLabelAliases, modelCoverageNotes } from "../config/aiConfig.js";
+import { aiConfig, modelLabelAliases, modelCoverageNotes } from "../config/aiConfig.js";
 
 const modelLoads = new Map();
+const modelLoadProgress = new Map();
 
 function disposeModel(model) {
   if (!model) return;
@@ -87,7 +88,7 @@ export function validateLabels(labels) {
   if (labels.length !== expectedLabels.length)
     errors.push(`ต้องมี 14 คลาส แต่พบ ${labels.length}`);
   if (errors.length)
-    throw new Error(`ชื่อคลาสโมเดลไม่ตรงกับ CircuitAI — ${errors.join(" • ")}`);
+    throw new Error(`ชื่อคลาสโมเดลไม่ตรงกับ CircuitLib — ${errors.join(" • ")}`);
   return true;
 }
 
@@ -133,38 +134,72 @@ export function readableError(error, fallback) {
   return error instanceof Error ? error.message : fallback;
 }
 
-export async function loadModel(modelUrl) {
+export async function loadModel(modelUrl, onProgress) {
   const baseUrl = normalizeModelUrl(modelUrl);
   if (!baseUrl) throw new Error("ยังไม่ได้กำหนด VITE_TM_MODEL_URL");
-  if (modelLoads.has(baseUrl)) return modelLoads.get(baseUrl);
-  // Cache the promise as well as the model: Strict Mode cannot start duplicate downloads.
-  const promise = (async () => {
-    await import("@tensorflow/tfjs");
-    const tmImage = await import("@teachablemachine/image");
-    const load = tmImage.load ?? tmImage.default?.load;
-    if (typeof load !== "function")
-      throw new Error("ไม่สามารถเริ่ม Teachable Machine library ได้");
-    let model;
-    try {
-      model = await load(`${baseUrl}model.json`, `${baseUrl}metadata.json`);
-      validateLabels(model.getClassLabels());
-      if (model.getTotalClasses() !== expectedLabels.length)
-        throw new Error("จำนวน output ของโมเดลต้องเท่ากับ 14");
-      return model;
-    } catch (error) {
-      disposeModel(model);
-      throw new Error(
-        `โหลดโมเดลไม่สำเร็จ: ${readableError(error, "ตรวจ URL และไฟล์โมเดล")} ตรวจ model.json, metadata.json, weights และ CORS ของที่เก็บโมเดล`,
-      );
-    }
-  })();
-  modelLoads.set(baseUrl, promise);
+  let promise = modelLoads.get(baseUrl);
+  let progress = modelLoadProgress.get(baseUrl);
+  if (!promise) {
+    progress = { value: 0, listeners: new Set() };
+    modelLoadProgress.set(baseUrl, progress);
+    const report = (value) => {
+      if (!Number.isFinite(value)) return;
+      progress.value = Math.max(progress.value, Math.min(100, Math.round(value)));
+      for (const listener of progress.listeners) listener(progress.value);
+    };
+    promise = (async () => {
+      const tf = await import("@tensorflow/tfjs");
+      const tmImage = await import("@teachablemachine/image");
+      const load = tmImage.load ?? tmImage.default?.load;
+      if (typeof load !== "function")
+        throw new Error("ไม่สามารถเริ่ม Teachable Machine library ได้");
+      let model;
+      try {
+        // Adapted from CircuitLib: report actual TF.js download progress.
+        const modelFile = tf.io.http(baseUrl + "model.json", {
+          onProgress: (fraction) => report(fraction * 100),
+        });
+        model = await load(modelFile, baseUrl + "metadata.json");
+        validateLabels(model.getClassLabels());
+        if (model.getTotalClasses() !== expectedLabels.length)
+          throw new Error("จำนวน output ของโมเดลต้องเท่ากับ 14");
+        report(100);
+        return model;
+      } catch (error) {
+        disposeModel(model);
+        throw new Error(
+          "โหลดโมเดลไม่สำเร็จ: " + readableError(error, "ตรวจ URL และไฟล์โมเดล") +
+          " ตรวจ model.json, metadata.json, weights และ CORS ของที่เก็บโมเดล",
+        );
+      }
+    })();
+    modelLoads.set(baseUrl, promise);
+  }
+  if (typeof onProgress === "function") {
+    progress.listeners.add(onProgress);
+    onProgress(progress.value);
+  }
   try {
     return await promise;
   } catch (error) {
-    modelLoads.delete(baseUrl);
+    if (modelLoads.get(baseUrl) === promise) {
+      modelLoads.delete(baseUrl);
+      modelLoadProgress.delete(baseUrl);
+    }
     throw error;
+  } finally {
+    progress.listeners.delete(onProgress);
   }
+}
+
+export const lowConfidenceMessage =
+  "ไม่สามารถวิเคราะห์ได้ เกิดข้อผิดพลาด กรุณาเช็คแสงและความชัดเจนของรูปภาพ";
+
+export function isConfidentPrediction(result) {
+  return (
+    Number.isFinite(result?.top?.probability) &&
+    result.top.probability > aiConfig.confidenceThreshold
+  );
 }
 
 export async function predictImage(model, imageElement) {
@@ -173,7 +208,9 @@ export async function predictImage(model, imageElement) {
   if (!imageElement?.complete || !imageElement.naturalWidth)
     throw new Error("ภาพยังถอดรหัสไม่สำเร็จ");
   const predictions = await model.predict(imageElement);
-  return formatPredictions(predictions, "real");
+  const result = formatPredictions(predictions, "real");
+  if (!isConfidentPrediction(result)) throw new Error(lowConfidenceMessage);
+  return result;
 }
 
 // The application owns cached models for its lifetime; dispose them on a Vite HMR update.
@@ -182,5 +219,6 @@ if (import.meta.hot) {
     for (const promise of modelLoads.values())
       promise.then(disposeModel).catch(() => {});
     modelLoads.clear();
+    modelLoadProgress.clear();
   });
 }

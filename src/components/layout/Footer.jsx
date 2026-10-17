@@ -1,11 +1,12 @@
-import { CircuitBoard, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-container">
         <span className="inline-flex items-center gap-2 font-semibold text-slate-600">
-          <CircuitBoard size={17} aria-hidden="true" /> CircuitAI{" "}
+          <img src="/circuitlib-logo.svg" alt="" width="24" height="24" />
+          <span className="brand-name">CIRCUIT<span className="brand-accent">LIB</span></span>{" "}
           <span className="font-normal text-slate-400">
             · เรียนรู้ ทดลอง เข้าใจ
           </span>

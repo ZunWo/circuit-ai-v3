@@ -71,7 +71,12 @@ test("dark pages fit mobile widths and preserve photos and resistor color bands"
       expect(dimensions.document, `${route} at ${width}px`).toBeLessThanOrEqual(
         dimensions.viewport,
       );
-      await expect(toggle(page)).toBeVisible();
+      if (route.includes("component=resistor")) {
+        await expect(page.getByRole("dialog", { name: "Resistor", exact: true })).toBeVisible();
+        await expect(page.getByRole("button", { name: "ปิดรายละเอียดชิ้นส่วน" })).toBeVisible();
+      } else {
+        await expect(toggle(page)).toBeVisible();
+      }
     }
   }
   await page.goto("/components?component=resistor");

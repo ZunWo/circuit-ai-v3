@@ -1,4 +1,4 @@
-# CircuitAI
+# CircuitLib
 
 เว็บไซต์เรียนรู้และจำแนกชิ้นส่วนอิเล็กทรอนิกส์ด้วย Google Teachable Machine ในเบราว์เซอร์
 
@@ -97,8 +97,12 @@ TensorFlow.js 1.3.1 เป็น runtime เก่าที่ TM helper ระ�
 - ตรวจชื่อ 14 คลาส ขาด/เกิน/ซ้ำ และตรวจจำนวน model outputs; ไม่ map ตาม array index
 - ส่งภาพจริงเข้า `model.predict(imageElement)` แสดง probability เดิมโดยแปลงเป็นเปอร์เซ็นต์ ไม่สุ่มและไม่เปลี่ยนคะแนนให้ดูสูงขึ้น
 - ป้องกันการกดวิเคราะห์ซ้อน และละทิ้งผลที่หมดอายุหลัง reset หรือออกจากหน้า
-- เตือนคะแนนต่ำกว่า 70% ซึ่งปรับได้ คะแนนไม่ใช่ Accuracy และไม่สร้าง Unknown class
+- แสดงผลจำแนกเมื่อความมั่นใจมากกว่า 70% เท่านั้น คะแนนไม่เกิน 70% แสดงข้อผิดพลาดและคำแนะนำให้ตรวจแสง/ความชัดของภาพ โดยไม่แสดงชื่อหรืออันดับ
+- หน้ากำลังประมวลผลพร้อมภาพที่เลือกและแอนิเมชันสแกน ปิดอัตโนมัติเมื่อสำเร็จหรือเกิดข้อผิดพลาด รองรับ reduced motion
 - Demo แยกจาก inference และติดป้าย Demo / Sample Data ทุกครั้ง ไม่มี fake processing delay
+- เครื่องมือคำนวณแถบสีตัวต้านทาน 4/5 แถบอยู่ในกล่องผลลัพธ์ก่อนวิธีต่อ แสดงเมื่อผลเป็น Resistor ทั้ง AI และ Demo ซ่อนเมื่อยังไม่มีผล เปลี่ยนรูป ลบรูป หรือวิเคราะห์ไม่ผ่าน
+- ผลลัพธ์ใช้ชื่อไทยเป็นหลัก แยกคำอธิบายเป็นหัวข้อ และพับรายละเอียดคะแนน AI ไว้
+- วิธีต่อครบ 14 หมวดแสดงสายทีละเส้น พร้อมชื่ออุปกรณ์และขาที่ต้องต่อทั้งสองฝั่ง ใช้สีแยกไฟบวก / กราวด์ / สัญญาณ มีรายการอุปกรณ์และผลที่ควรได้ และเลือกชนิดตัวรับ/ตัวส่งหรือขาร่วมจอได้
 - Library ครบ 14 ประเภท ค้นหาไทย/อังกฤษ เลือกรายละเอียดและเปิดจากผล prediction ได้
 - Equipment Guide 4 ชนิด พร้อมขั้นตอน 6–7 ข้อ ข้อควรระวังและแหล่งอ่านเพิ่มเติม
 - Responsive, active navigation, skip link, keyboard focus และ reduced-motion support
@@ -148,17 +152,17 @@ Restart Vite หลังเปลี่ยน environment และ build ใ�
 | resistor | Resistor |
 | c_ceramic | C Ceramic |
 | c_film | C Film |
-| c_electrolyte | C Electrolytic |
+| c_electrolytic / c_electrolyte / c_electrolyt... | C Electrolytic |
 | diode | Diode |
 | transistor | Transistor |
 | led | LED |
-| switch | Switch |
+| button_switch / switch / button_switc... | Switch |
 | ldr | Photoresistor |
 | 7segment | 7-Segment |
-| potentiometer | Potentiometer |
+| potentiometer / potentiomete... | Potentiometer |
 | buzzer | Buzzer |
 | thermistor | Thermistor |
-| phototransistor | IR LED / Photo transistor (โมเดลฝึกเฉพาะ Photo transistor) |
+| phototransistor / phototransis... | IR LED / Photo transistor (โมเดลฝึกเฉพาะ Photo transistor) |
 
 เก็บชื่อคลาสต้นฉบับไว้กับผลลัพธ์ และคง probability จริงทุกค่า การ mapping ไม่เพิ่มความสามารถจำแนก IR LED ให้โมเดล
 
@@ -197,15 +201,15 @@ Tests สำหรับ probability, labels, error และ low-confidence ใ
 
 | การตรวจที่รันจริง | ผล |
 |---|---|
-| `npm.cmd test` | ผ่าน 11/11 รวม aliases ที่อนุมัติ การชนกันของชื่อ และข้อจำกัด Photo transistor |
-| `npm.cmd run test:browser` | ผ่าน 28/28: Edge desktop และ mobile viewport จำลอง รวมการอ่านสี 4/5 แถบ ตัวคูณเศษส่วน tolerance รูปทุกชนิด คู่มือทุกหมวด เครดิตภาพ และ Dark Mode (การจำค่า การซิงก์แท็บ การปิด storage และ layout ทุกหน้า) |
+| `npm.cmd test` | ผ่าน 19/19 รวมชื่อย่อจากโมเดลจริง เกณฑ์ความมั่นใจ การเชื่อมต่อ breadboard ครบ 16 ตัวอย่าง และขอบเขตภาพที่ขยายเฉพาะสาย |
+| `npm.cmd run test:browser` | รอบตรวจ UI ผ่าน 50/50 บน Edge คอมและ mobile viewport จำลอง รวมการเปลี่ยนสายในภาพขยาย การย่อ/ขยาย และ scroll lock จากนั้นทดสอบชุด AI ซ้ำผ่าน 14/14 หลังแก้ชื่อคลาสย่อและการแสดงคะแนนใกล้ 70% |
 | `npm.cmd run build` | ผ่าน ได้ production assets ใน `dist/` |
 | Audit หลังติดตั้ง dependency override | 0 vulnerabilities |
 | `node tests/model-connection.mjs` | โมเดลจริงโหลดสำเร็จ; outputs/probabilities 14 คลาส; Analyze ในเว็บซ้ำ 2 ครั้ง; UI score ตรงกับ model output; โหลด model.json ครั้งเดียวใน Strict Mode และ reuse หลัง navigation; POST ภาพ 0 ครั้ง |
 
 Browser tests ครอบคลุมทั้ง 3 route และ Not Found, navigation, ค้นหาไทย/อังกฤษ, รายละเอียดชิ้นส่วน, คู่มือเครื่องมือครบ 4 ชนิด, upload/preview/replace/remove, object URL cleanup, drag-and-drop, ไฟล์ผิดชนิด/ใหญ่/ว่าง/เสีย, Demo reset, ไม่มี POST ส่งภาพ, layout ที่ 320/390/768/1440 px, keyboard skip link, HTTP 404 ของโมเดล, retry และการโหลดครั้งเดียวภายใต้ Strict Mode
 
-Loading, prediction error และ low-confidence warning ตรวจด้วย component fixture ที่แยกจากแอป Probability sorting และ class mapping ตรวจด้วย unit fixtures ไม่ใช่โมเดลที่ฝึกแล้ว เก็บ screenshots ทั้ง 3 หน้าและ Demo ใน `test-results/` และตรวจภาพ desktop/mobile ด้วยตาแล้ว
+Loading, prediction error และการปฏิเสธคะแนนต่ำตรวจด้วย component fixture และ flow ที่จำลองเฉพาะ model loader โดยใช้ hook / การตรวจภาพ / เกณฑ์ความมั่นใจจริง Probability sorting และ class mapping ตรวจด้วย unit fixtures ส่วน tests/model-connection.mjs ตรวจโมเดลที่โหลดจริง ไม่ใช่การวัดความแม่นยำ เก็บ screenshots ทั้ง 3 หน้าและ Demo ใน `test-results/` และตรวจภาพ desktop/mobile ด้วยตาแล้ว
 
 Build มีคำเตือนขนาด TF.js chunk ประมาณ 894 kB ก่อน gzip (ประมาณ 213 kB gzip) เป็น dynamic import ที่โหลดเมื่อมีการกำหนดโมเดล ไม่ใช่ build error
 
@@ -222,3 +226,16 @@ Real-model smoke test ใช้ภาพสังเคราะห์สีเ�
 - TF.js bundle มีขนาดใหญ่ แต่โหลดแบบ dynamic เฉพาะเมื่อกำหนดโมเดล หน้าเว็บที่ยังไม่มีโมเดลไม่ต้องดาวน์โหลด runtime นี้
 - ไม่ได้ทดสอบบนโทรศัพท์จริงหรือ browser ทุกตระกูล และยังไม่มีการ publish เว็บไซต์
 
+
+## ฟังก์ชันที่รวมจาก CircuitLib
+
+นำแอนิเมชันสแกนรูป แถบโหลด เปอร์เซ็นต์ดาวน์โหลดโมเดล ภาพ breadboard และบททดลองพื้นฐานจาก [Electronic-Components-Librarys](https://github.com/keenzachanathip-bit/Electronic-Components-Librarys) มาปรับให้เข้ากับ Light/Dark Mode และระบบโมเดลเดิม
+
+ภาพ breadboard ครบทั้ง 14 หมวด รวม 16 แบบการต่อเมื่อรวม IR ตัวรับ/ตัวส่งและจอขาร่วมบวก/ลบ กดขยายหรือเลือกสายทีละเส้นบน breadboard ได้ พร้อมระบุหมายเลขรูต้นทาง–ปลายทาง จอ 7-segment แสดงสาย a/COM จากจอและให้เทียบผังขาจริง ดูแหล่งที่มาและรายละเอียดการรวมใน [docs/integrations.md](docs/integrations.md)
+หน้ารายละเอียดใน Components เปิดเป็นป๊อปอัปแบบ CircuitLib มีหัวข้อและปุ่มปิดค้างด้านบน แบ่งเป็นการ์ดหมายเลข: วิธีสังเกต, ขั้วและ GND, วิธีต่อ, ตัวอย่างการใช้งาน พร้อมเมนูลัดไปอ่านค่า คำนวณตัวต้านทาน ภาพวงจร และเอกสารอ้างอิง รองรับลิงก์ตรง ปิดด้วย Escape และคืนโฟกัสไปการ์ดเดิม
+
+การต่อวงจรแสดงภาพเป็นหลัก: เลือกภาพ breadboard หรือภาพจุดต่อสาย กดหมายเลขเพื่อเน้นสายทีละเส้น และขยายภาพได้ รายการสายแบบข้อความพับเก็บไว้ใต้ภาพ
+
+breadboard เริ่มที่สายแรกโดยแสดงเพียงเส้นเดียว พร้อมป้ายสีเขียว “จาก” และสีส้ม “ไป” ระบุรูเสียบ กดสายถัดไปเพื่อทำตามลำดับ หรือดูทุกสายเพื่อดูภาพรวม สายไฟเข้ารางใกล้ขาอุปกรณ์ สายข้ามร่องกลางผ่านช่องว่างระหว่างอุปกรณ์ และแยกทางเดินเพื่อไม่กองซ้อนที่ขอบบอร์ด
+
+ภาพแต่ละสายขยายเฉพาะบริเวณที่ใช้ต่อโดยอัตโนมัติ มีปุ่มแสดงทั้งบอร์ด ภาพขยายเริ่มพอดีหน้าจอและมีปุ่มเลือกสาย ย่อ/ขยาย และดูทุกสายภายในหน้าต่างเดียว ดูปัญหาที่พบและผลตรวจใน [docs/ui-review.md](docs/ui-review.md)

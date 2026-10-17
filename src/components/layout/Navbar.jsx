@@ -1,6 +1,5 @@
 import { NavLink, Link } from "react-router-dom";
 import {
-  CircuitBoard,
   ScanLine,
   BookOpen,
   Gauge,
@@ -21,13 +20,10 @@ export default function Navbar() {
   return (
     <header className="site-header">
       <div className="nav-container">
-        <Link to="/" className="brand" aria-label="CircuitAI หน้าหลัก">
-          <span className="brand-mark">
-            <CircuitBoard size={24} aria-hidden="true" />
-          </span>
-          <span>
-            Circuit<span className="text-sky-600">AI</span>
-            <span className="brand-caption">ELECTRONICS LEARNING LAB</span>
+        <Link to="/" className="brand" aria-label="CircuitLib หน้าหลัก">
+          <img className="brand-mark" src="/circuitlib-logo.svg" alt="" width="40" height="40" />
+          <span className="brand-name">
+            CIRCUIT<span className="brand-accent">LIB</span>
           </span>
         </Link>
         <nav aria-label="เมนูหลัก" className="main-nav">

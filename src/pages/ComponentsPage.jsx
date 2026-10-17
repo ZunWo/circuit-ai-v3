@@ -21,14 +21,15 @@ export default function ComponentsPage() {
   );
 
   function select(component) {
-    setParams({ component: component.id });
-    requestAnimationFrame(() => {
-      detailRef.current?.focus({ preventScroll: true });
-      detailRef.current?.scrollIntoView({
-        behavior: "instant",
-        block: "start",
-      });
-    });
+    setParams({ component: component.id }, { preventScrollReset: true });
+  }
+
+  function closeDetails() {
+    setParams((current) => {
+      const next = new URLSearchParams(current);
+      next.delete("component");
+      return next;
+    }, { preventScrollReset: true });
   }
 
   return (
@@ -92,7 +93,7 @@ export default function ComponentsPage() {
         </div>
       )}
       {selected && (
-        <ComponentDetails component={selected} detailRef={detailRef} />
+        <ComponentDetails key={selected.id} component={selected} detailRef={detailRef} onClose={closeDetails} />
       )}
     </>
   );

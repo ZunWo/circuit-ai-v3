@@ -73,6 +73,7 @@ try {
     name: "วิเคราะห์ภาพ (Analyze Image)",
     exact: true,
   });
+  // A synthetic image may be rejected by the confidence gate; test that outcome too.
   for (const name of ["runtime-smoke.png", "repeat-smoke.png"]) {
     await input.setInputFiles({ ...imageFixture, name });
     await page.getByAltText(`ภาพที่เลือก: ${name}`).waitFor();
@@ -83,28 +84,49 @@ try {
     );
     assert.equal(await analyze.isEnabled(), true);
     await analyze.click();
-    await page.locator(".result-source-real").waitFor({ timeout: 120_000 });
-    assert.equal(await page.locator(".probabilities li").count(), 14);
+    await page.waitForFunction(
+      () => !document.querySelector(".analysis-loading[open]") &&
+        (document.querySelector(".result-source-real") || document.querySelector(".prediction-error")),
+      undefined,
+      { timeout: 120_000 },
+    );
+    const realResult = await page.locator(".result-source-real").count();
+    if (realResult) {
+      assert.equal(await page.locator(".probabilities li").count(), 14);
+    } else {
+      assert.match(await page.locator(".prediction-error").innerText(), /กรุณาเช็คแสงและความชัดเจนของรูปภาพ/);
+      assert.equal(await page.locator(".prediction-top").count(), 0);
+    }
     assert.equal(await page.locator(".result-source-demo").count(), 0);
   }
   const actualResult = await page.evaluate(async (url) => {
     const { loadModel, predictImage } = await import(
       "/src/services/teachableMachine.js"
     );
-    return await predictImage(
-      await loadModel(url),
-      document.querySelector(".image-preview"),
-    );
+    try {
+      return await predictImage(
+        await loadModel(url),
+        document.querySelector(".image-preview"),
+      );
+    } catch (error) {
+      return { error: error.message };
+    }
   }, modelUrl);
-  assert.equal(actualResult.source, "real");
-  assert.equal(
-    await page.locator(".confidence-row strong").innerText(),
-    `${actualResult.top.percentage.toFixed(1)}%`,
-  );
-  assert.equal(
-    await page.locator(".prediction-top h3").innerText(),
-    actualResult.top.className,
-  );
+  if (actualResult.error) {
+    assert.match(actualResult.error, /กรุณาเช็คแสงและความชัดเจนของรูปภาพ/);
+    assert.equal(await page.locator(".result-source-real").count(), 0);
+  } else {
+    assert.equal(actualResult.source, "real");
+    assert.ok(actualResult.top.probability > 0.7);
+    assert.equal(
+      await page.locator(".confidence-row strong").innerText(),
+      `${actualResult.top.percentage.toFixed(1)}%`,
+    );
+    assert.equal(
+      await page.locator(".prediction-top h3").innerText(),
+      actualResult.top.component.thaiName,
+    );
+  }
   assert.equal(
     imagePostRequests,
     0,
@@ -129,6 +151,7 @@ try {
         applicationSmoke: "passed",
         applicationStatus: status,
         repeatedPredictions: 2,
+        predictionOutcome: actualResult.error ? "rejected-low-confidence" : "accepted",
         actualModelRequests: applicationModelRequests,
         imagePosts: imagePostRequests,
         fixture: "synthetic 1x1 PNG; NOT a component accuracy test",

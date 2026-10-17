@@ -28,6 +28,9 @@ export default function RecognitionPage() {
     resetPrediction,
     retryModel,
   } = useRecognition();
+  const showResistorReader =
+    predictionState.status === "completed" &&
+    predictionState.result?.top.component.id === "resistor";
   const analyzing = predictionState.status === "analyzing";
   const canAnalyze =
     modelState.status === "ready" && Boolean(upload) && !analyzing;
@@ -56,6 +59,26 @@ export default function RecognitionPage() {
           Teachable Machine · Browser-based AI
         </p>
       </PageHeader>
+      {showResistorReader && (
+        <nav className="recognition-shortcuts" aria-label="เครื่องมือในหน้านี้">
+          <a href="#recognition-upload">
+            <ScanLine size={18} aria-hidden="true" /> วิเคราะห์ภาพอุปกรณ์
+          </a>
+          <a href="#resistor-tools">
+            <BookOpen size={18} aria-hidden="true" /> อ่านค่าตัวต้านทานจากแถบสี
+          </a>
+        </nav>
+      )}
+      {modelState.status === "loading" && (
+        <section className="model-download" aria-label="ดาวน์โหลดโมเดล AI">
+          <p>{modelState.progress === 100
+            ? "ดาวน์โหลดแล้ว กำลังเตรียมโมเดล…"
+            : "กำลังดาวน์โหลดโมเดล AI" + (modelState.progress == null ? "…" : " " + modelState.progress + "%")}</p>
+          <div className="progress-track" role="progressbar" aria-label="ความคืบหน้าการโหลดโมเดล" aria-valuemin={0} aria-valuemax={100} aria-valuenow={modelState.progress ?? undefined}>
+            <span style={{ width: (modelState.progress ?? 0) + "%" }} />
+          </div>
+        </section>
+      )}
       {modelState.coverageNotes?.length > 0 && (
         <div className="alert alert-warning mb-6" role="note">
           <Info size={18} aria-hidden="true" />
@@ -63,7 +86,7 @@ export default function RecognitionPage() {
         </div>
       )}
       <div className="recognition-grid">
-        <section className="panel upload-panel" aria-labelledby="upload-title">
+        <section id="recognition-upload" className="panel upload-panel" aria-labelledby="upload-title">
           <div className="panel-heading">
             <div className="flex items-center gap-3">
               <span className="step-marker">01</span>
@@ -133,12 +156,12 @@ export default function RecognitionPage() {
               <span className="step-marker">02</span>
               <div>
                 <h2 id="result-title">ผลการจำแนก</h2>
-                <p>Prediction & component insights</p>
+                <p>ชื่ออุปกรณ์ หน้าที่ และวิธีต่อใช้งาน</p>
               </div>
             </div>
             <span className="small-tag">14 คลาส</span>
           </div>
-          <PredictionResult state={predictionState} />
+          <PredictionResult state={predictionState} previewUrl={upload?.url} />
         </section>
       </div>
       {modelState.status === "error" && (

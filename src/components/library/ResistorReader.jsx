@@ -17,7 +17,7 @@ const resistance = (value) =>
       ? `${number(value / 1e3)} kΩ`
       : `${number(value)} Ω`;
 
-export default function ResistorReader() {
+export default function ResistorReader({ title = "ลองอ่านแถบสีตัวต้านทาน" }) {
   const [bandCount, setBandCount] = useState(4);
   const [selected, setSelected] = useState({
     first: "yellow",
@@ -68,7 +68,7 @@ export default function ResistorReader() {
     >
       <div className="reader-heading">
         <div>
-          <h3 id="resistor-reader-title">ลองอ่านแถบสีตัวต้านทาน</h3>
+          <h3 id="resistor-reader-title">{title}</h3>
           <p>เลือกสีตามอุปกรณ์ แล้วดูวิธีคำนวณ</p>
         </div>
         <div className="band-toggle" aria-label="จำนวนแถบสี">

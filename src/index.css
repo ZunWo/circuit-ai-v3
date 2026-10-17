@@ -113,13 +113,19 @@
     @apply mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-5 px-5 pt-5 sm:px-8 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-x-6 lg:py-5;
   }
   .brand {
-    @apply inline-flex w-fit items-center gap-3 text-xl font-bold tracking-tight no-underline;
+    @apply inline-flex w-fit items-center gap-3 no-underline;
   }
   .brand-mark {
-    @apply flex size-11 items-center justify-center rounded-xl bg-sky-600 text-white;
+    @apply size-10 shrink-0 rounded-xl;
   }
-  .brand-caption {
-    @apply mt-0.5 block text-[8px] font-semibold tracking-[0.2em] text-slate-400;
+  .brand-name {
+    @apply text-sm font-bold tracking-[0.1em] sm:text-base;
+  }
+  .brand-accent {
+    color: #0e7490;
+  }
+  [data-theme="dark"] .brand-accent {
+    color: #67e8f9;
   }
   .main-nav {
     @apply col-span-2 row-start-2 flex gap-1 sm:gap-3 lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:justify-self-end;
@@ -769,4 +775,335 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Readable learning content and the inference loading screen. */
+@layer components {
+  .recognition-shortcuts {
+    @apply mb-6 flex flex-wrap gap-3;
+  }
+  .recognition-shortcuts a {
+    @apply inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-sky-700 hover:bg-sky-50;
+  }
+  #recognition-upload, #resistor-tools {
+    scroll-margin-top: 1.5rem;
+  }
+  .home-resistor {
+    @apply mt-8;
+  }
+  .home-resistor .resistor-reader {
+    @apply mt-5;
+  }
+  .panel-heading h2, .reader-heading h3 {
+    @apply text-lg;
+  }
+  .panel-heading p, .reader-heading p, .text-link, .band-fields select {
+    @apply text-sm leading-7;
+  }
+  .band-fields label > span, .color-reference summary, .reader-result p {
+    @apply text-sm leading-7;
+  }
+  .detail-sections article > p, .practical-steps, .prediction-info {
+    @apply text-base leading-8 text-slate-700;
+  }
+  .detail-overview > p, .reading-example p, .polarity-summary {
+    @apply text-base leading-8;
+  }
+  .alert {
+    @apply text-sm leading-7;
+  }
+  .prediction-info > article {
+    @apply mb-5 rounded-xl bg-slate-50 p-4 sm:p-5;
+  }
+  .prediction-info h4 {
+    @apply mb-2 text-base font-semibold text-slate-900;
+  }
+  .result-more {
+    @apply mt-5 rounded-xl border border-slate-200 p-4;
+  }
+  .result-more summary {
+    @apply text-base font-semibold text-slate-800;
+  }
+  .result-more article {
+    @apply mt-5;
+  }
+  .probabilities summary {
+    @apply text-sm leading-7;
+  }
+  .connection-guide {
+    @apply mt-6 min-w-0 rounded-2xl border border-sky-200 bg-sky-50/40 p-4 sm:p-6;
+  }
+  .connection-guide h3 {
+    @apply flex items-center gap-2 text-lg font-semibold text-slate-900;
+  }
+  .connection-guide h3 svg {
+    @apply shrink-0 text-sky-700;
+  }
+  .connection-title {
+    @apply mt-2 text-base font-medium leading-8 text-slate-800;
+  }
+  .connection-intro {
+    @apply mt-2 text-sm leading-7 text-slate-600;
+  }
+  .connection-circuit {
+    @apply mt-4 rounded-xl border border-slate-200 p-4;
+    background-color: var(--app-surface);
+  }
+  .connection-circuit > p {
+    @apply text-sm font-semibold leading-7 text-slate-700;
+  }
+  .connection-path {
+    @apply mt-3 flex list-none flex-wrap items-center gap-x-2 gap-y-3 p-0;
+  }
+  .connection-path li {
+    @apply flex min-w-0 max-w-full items-center gap-2 text-sm leading-7;
+  }
+  .connection-path li > span {
+    @apply min-w-0 rounded-md bg-slate-100 px-2.5 py-1 break-words text-slate-800;
+  }
+  .connection-path svg {
+    @apply shrink-0 text-sky-600;
+  }
+  .connection-note {
+    @apply mt-5 border-l-4 border-sky-500 pl-4 text-sm leading-7 text-slate-700;
+  }
+  .prediction-error h3 {
+    @apply text-xl text-rose-700;
+  }
+  .prediction-error > p {
+    @apply max-w-md text-base leading-8 text-slate-700;
+  }
+  .photo-tips {
+    @apply my-5 max-w-md list-disc space-y-2 pl-5 text-left text-sm leading-7 text-slate-600;
+  }
+  .analysis-loading {
+    @apply fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-lg overflow-y-auto rounded-3xl border border-slate-200 p-6 text-center text-slate-900 shadow-2xl sm:p-10;
+    max-height: calc(100dvh - 2rem);
+    background: var(--app-surface);
+  }
+  .analysis-loading::backdrop {
+    background: rgb(2 6 23 / 72%);
+    backdrop-filter: blur(7px);
+  }
+  .analysis-scan {
+    @apply relative mx-auto mb-7 flex size-44 items-center justify-center overflow-hidden rounded-2xl border border-sky-200 bg-slate-50 text-sky-600;
+  }
+  .analysis-scan img {
+    @apply h-full w-full object-contain p-3;
+  }
+  .analysis-scan-line {
+    @apply absolute inset-x-0 top-0 h-1 bg-sky-400;
+    box-shadow: 0 0 22px 6px rgb(56 189 248 / 45%);
+    animation: scan-image 1.8s ease-in-out infinite alternate;
+  }
+  .analysis-loading-label {
+    @apply mb-3 flex items-center justify-center gap-2 text-sm font-semibold text-sky-700;
+  }
+  .analysis-loading h3 {
+    @apply text-2xl font-semibold;
+  }
+  .analysis-loading p {
+    @apply mt-4 text-base leading-8 text-slate-600;
+  }
+  .analysis-loading .analysis-loading-privacy {
+    @apply mt-6 flex items-center justify-center gap-2 border-t border-slate-200 pt-5 text-sm text-slate-500;
+  }
+}
+@keyframes scan-image {
+  from { top: 5%; }
+  to { top: 92%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .analysis-scan-line, .analysis-loading .animate-spin {
+    animation: none;
+  }
+  .analysis-scan-line {
+    top: 50%;
+  }
+}
+
+@layer components {
+  .connection-guide { background: var(--app-surface); }
+  .connection-options { @apply mt-4 flex flex-wrap gap-2; }
+  .connection-options button { @apply rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600; }
+  .connection-options button[aria-pressed="true"] { @apply border-sky-600 bg-sky-600 text-white; }
+  .wiring-instruction { @apply mt-3 text-base leading-8 text-slate-700; }
+  .wiring-parts { @apply mt-4 rounded-xl bg-slate-50 p-4; }
+  .wiring-parts > p { @apply text-sm font-semibold text-slate-700; }
+  .wiring-parts ul { @apply mt-2 flex list-none flex-wrap gap-2 p-0; }
+  .wiring-parts li { @apply rounded-md border border-slate-200 px-2.5 py-1 text-sm leading-6 text-slate-700; }
+  .wiring-setup { @apply mt-4 flex items-start gap-2 text-sm leading-7 text-slate-600; }
+  .wiring-setup svg { @apply mt-1 shrink-0 text-sky-600; }
+  .wire-legend { @apply mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-600; }
+  .wire-legend > span { @apply inline-flex items-center gap-1.5; }
+  .wire-dot { @apply inline-block size-2.5 rounded-full; background: currentColor; }
+  .wire-power { color: #e11d48; }
+  .wire-ground { color: var(--color-slate-600); }
+  .wire-signal { color: var(--color-sky-600); }
+  .wire-list { @apply mt-3 list-none space-y-3 p-0; }
+  .wire-row, .wire-route {
+    @apply grid min-w-0 items-center gap-2 rounded-xl border border-slate-200 p-3 sm:gap-3 sm:p-4;
+    grid-template-columns: 1.4rem minmax(0,1fr) 1.25rem minmax(0,1fr);
+    border-left: 3px solid currentColor;
+  }
+  .wire-number { @apply flex size-5 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-600; }
+  .wire-terminal { @apply flex min-w-0 flex-col gap-1 break-words text-left; }
+  .wire-direction { @apply text-xs text-slate-500; }
+  .wire-part { @apply text-sm leading-6 text-slate-700; }
+  .wire-terminal strong { @apply text-sm font-semibold leading-6 text-slate-900; }
+  .wire-connector { @apply w-full; }
+  .wiring-outcome { @apply mt-5 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4; }
+  .wiring-outcome svg { @apply mt-1 shrink-0 text-emerald-600; }
+  .wiring-outcome p { @apply text-sm text-emerald-800; }
+  .wiring-outcome strong { @apply mt-1 block text-base font-semibold leading-8 text-slate-800; }
+  .connection-details { @apply mt-4 border-t border-slate-200 pt-4; }
+  .connection-details summary { @apply text-sm font-semibold text-slate-600; }
+  .connection-details > p, .connection-details li { @apply mt-3 text-sm leading-7 text-slate-600; }
+  .connection-details ul { @apply ml-5 list-disc; }
+  .breadboard-example { @apply my-5 min-w-0; }
+  .breadboard-example figcaption { @apply mb-3 flex flex-wrap items-center justify-between gap-2 text-sm text-slate-800; }
+  .breadboard-example figcaption button { @apply inline-flex items-center gap-1.5 rounded-lg border border-sky-200 px-3 py-2 font-semibold text-sky-700; }
+  .breadboard-preview { @apply overflow-hidden rounded-xl; }
+  .breadboard-preview svg { @apply block h-auto w-full; }
+  .breadboard-preview:has(.breadboard-picture[data-focused="true"]) { background: #0b1220; }
+  .breadboard-preview .breadboard-picture[data-focused="true"] { max-height: 460px; }
+  .breadboard-example > p { @apply mt-3 text-sm leading-7 text-slate-600; }
+  .breadboard-dialog {
+    @apply fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-5xl overflow-auto rounded-2xl border border-slate-200 p-4 text-slate-900 sm:p-6;
+    max-height: calc(100dvh - 2rem);
+    background: var(--app-surface);
+  }
+  .breadboard-dialog::backdrop { background: rgb(2 6 23 / 75%); }
+  .breadboard-dialog[open] { display: flex; flex-direction: column; overflow: hidden; }
+  .breadboard-dialog header { @apply mb-4 flex items-center justify-between gap-3; }
+  .breadboard-dialog header, .breadboard-dialog-navigation, .breadboard-tools, .breadboard-dialog-step { flex-shrink: 0; }
+  .breadboard-dialog h2 { @apply text-lg font-semibold; }
+  .breadboard-zoom { @apply min-h-0 max-w-full overflow-auto; flex: 1 1 auto; }
+  .breadboard-zoom svg { min-width: 0; }
+  .breadboard-canvas { margin-inline: auto; }
+  .breadboard-canvas[data-fit="true"] svg { max-height: max(180px, calc(100dvh - 360px)); }
+  .breadboard-scope { @apply mb-3 flex justify-end; }
+  .breadboard-scope button, .breadboard-tools button { @apply inline-flex min-h-11 items-center justify-center rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 disabled:opacity-30; }
+  .breadboard-tools { @apply mb-3 flex flex-wrap items-center gap-2; }
+  .breadboard-tools > span { @apply min-w-10 text-center text-xs font-semibold text-slate-600; }
+  .breadboard-dialog-step { @apply mb-3 rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm text-sky-900; }
+  .breadboard-dialog-step > div { @apply mt-2 grid items-center gap-2; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .breadboard-dialog-step b { @apply block break-words text-base; }
+  .breadboard-dialog-navigation { @apply mt-4; }
+  .breadboard-dialog > p { @apply mt-4 text-sm leading-7 text-slate-600; }
+  .analysis-scan-shell { @apply relative mx-auto mb-8 mt-3 w-fit; }
+  .analysis-scan-shell .analysis-scan { @apply mb-0; }
+  .analysis-orbit { @apply absolute -inset-3 rounded-3xl border-2 border-transparent border-t-sky-400 border-r-sky-200; animation: spin 2s linear infinite; }
+  .analysis-progress { @apply mx-auto mt-6 h-2.5 w-full max-w-sm overflow-hidden rounded-full bg-slate-100; }
+  .analysis-progress > span { @apply block h-full w-1/3 rounded-full bg-sky-500; animation: loading-progress 1.4s ease-in-out infinite; }
+  .model-download { @apply mb-6 rounded-xl border border-sky-200 bg-sky-50 p-4; }
+  .model-download p { @apply mb-3 text-sm font-semibold text-sky-800; }
+  .model-download .progress-track { @apply bg-sky-100; }
+  .model-download .progress-track > span { @apply bg-sky-500; }
+}
+@keyframes loading-progress {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(300%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .analysis-orbit, .analysis-progress > span { animation: none; }
+}
+
+@layer components {
+  .result-panel .reader-heading { @apply flex-col items-start; }
+  .result-panel .resistor-reader { @apply mt-5 p-4; }
+  .result-panel .band-fields { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 390px) {
+  .result-panel .band-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Sectioned component details, adapted from CircuitLib's PartDetailDialog. */
+@layer components {
+  dialog.component-dialog {
+    @apply fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-5xl flex-col overflow-hidden rounded-3xl border border-slate-200 p-0 text-slate-900 shadow-2xl;
+    display: none;
+    height: min(920px, calc(100dvh - 2rem));
+    max-height: calc(100dvh - 2rem);
+    background: var(--app-surface);
+  }
+  dialog.component-dialog[open] { display: flex; }
+  .component-dialog::backdrop { background: rgb(2 6 23 / 76%); backdrop-filter: blur(6px); }
+  .detail-dialog-header { @apply flex shrink-0 items-start justify-between gap-4 border-b border-slate-200 p-5 sm:px-7; }
+  .detail-dialog-header h2 { @apply mt-1 break-words text-2xl font-semibold leading-tight sm:text-3xl; }
+  .detail-thai-name { @apply mt-2 text-base leading-7 text-slate-600; }
+  .detail-close { @apply flex size-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100; }
+  .detail-section-nav { @apply flex shrink-0 gap-2 overflow-x-auto border-b border-slate-200 px-5 py-3 sm:px-7; }
+  .detail-section-nav a { @apply shrink-0 rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold whitespace-nowrap text-sky-700 hover:bg-sky-100; }
+  .detail-dialog-body { @apply min-h-0 flex-1 overflow-y-auto p-5 sm:p-7; overscroll-behavior: contain; }
+  .detail-dialog-body section[id], .detail-dialog-body h2[id] { scroll-margin-top: 1rem; }
+  .component-dialog .detail-overview { @apply grid min-w-0 gap-5 border-0 p-0 sm:grid-cols-[180px_minmax(0,1fr)]; }
+  .detail-photo { @apply min-w-0; }
+  .detail-photo .asset-placeholder-large { @apply h-40; }
+  .detail-image-credit { @apply mt-2 text-xs text-slate-500; }
+  .detail-image-credit .image-credit { @apply leading-6; }
+  .detail-function { @apply rounded-2xl border border-sky-200 bg-sky-50/60 p-5; }
+  .detail-label { @apply text-sm font-semibold text-sky-700; }
+  .detail-function .detail-function-main { @apply mt-2 text-lg font-semibold leading-8 text-slate-900; }
+  .detail-function > p:not(.detail-function-main) { @apply mt-3 text-base leading-8 text-slate-700; }
+  .detail-principle { @apply mt-4 border-t border-sky-200 pt-3; }
+  .detail-principle summary { @apply text-sm font-semibold text-sky-800; }
+  .detail-principle p { @apply mt-3 text-base leading-8 text-slate-700; }
+  .detail-summary-cards { @apply mt-5 grid min-w-0 gap-4 md:grid-cols-2; }
+  .detail-info-card { @apply min-w-0 rounded-2xl border border-slate-200 bg-slate-50/50 p-5; }
+  .detail-info-card > header { @apply flex items-center gap-3; }
+  .detail-card-number { @apply flex size-8 shrink-0 items-center justify-center rounded-lg bg-sky-100 text-xs font-bold text-sky-700; }
+  .detail-info-card h3 { @apply flex items-center gap-2 text-base font-semibold text-slate-900; }
+  .detail-info-card h3 svg { @apply shrink-0 text-sky-600; }
+  .detail-info-card > p:not(.polarity-summary) { @apply mt-4 text-base leading-8 text-slate-700; }
+  .detail-applications { @apply mt-4 ml-5 list-disc space-y-2 text-base leading-8 text-slate-700; }
+  .detail-section-heading { @apply flex items-start gap-3; }
+  .detail-section-heading h2 { @apply text-lg font-semibold leading-8; }
+  .detail-section-heading p { @apply mt-1 text-sm leading-7 text-slate-600; }
+  .component-dialog .practical-guide { @apply mt-7 border-t border-slate-200 px-0 pt-6 pb-0; }
+  .component-dialog .guide-columns { @apply mt-5 gap-4; }
+  .component-dialog .guide-columns article { @apply rounded-2xl border border-slate-200 p-5; }
+  .component-dialog .polarity-summary { @apply p-3 text-sm leading-7; }
+  .detail-wiring { @apply mt-7 border-t border-slate-200 pt-6; }
+  .detail-wiring .connection-guide { @apply mt-4; }
+  .detail-calculator, .detail-references { @apply mt-6; }
+  .detail-extra-images { @apply mt-5 grid gap-4 sm:grid-cols-2; }
+  .detail-extra-images .extra-component-image { @apply mt-0 rounded-xl border border-slate-200 p-4; }
+  .detail-extra-images img { @apply max-h-40 object-contain; }
+  .detail-references .practical-sources { @apply rounded-xl border border-slate-200 p-4; }
+  .detail-references .alert strong { @apply block; }
+  .detail-references .alert p { @apply mt-1; }
+}
+@media (max-width: 639px) {
+  dialog.component-dialog { width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+}
+
+@layer components {
+  .picture-modes, .picture-step-controls { @apply mt-4 flex flex-wrap gap-2; }
+  .picture-modes button, .picture-step-controls button { @apply rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-600; }
+  .picture-modes button[aria-pressed="true"], .picture-step-controls button[aria-pressed="true"] { @apply border-sky-600 bg-sky-600 text-white; }
+  .picture-step-controls button:not(:first-child) { @apply min-w-9; }
+  .circuit-picture { display: block; width: 100%; height: auto; font-family: "Leelawadee UI", Tahoma, sans-serif; }
+  .breadboard-zoom .circuit-picture { min-width: 0; }
+  .breadboard-picture { display: block; width: 100%; height: auto; font-family: "Leelawadee UI", Tahoma, sans-serif; }
+  .breadboard-zoom .breadboard-picture { min-width: 0; }
+  .wire-hole { @apply mt-1 w-fit rounded-md border border-sky-200 bg-sky-50 px-2 py-1 text-sm font-bold text-sky-800; }
+  .selected-wire-step { @apply mt-4 rounded-xl border border-sky-200 bg-sky-50 p-3 sm:p-4; }
+  .selected-wire-heading { @apply mb-3 flex flex-wrap items-center justify-between gap-2 text-base text-sky-800; }
+  .selected-wire-step .wire-route { grid-template-columns: minmax(0,1fr) 1.25rem minmax(0,1fr); background: var(--app-surface); }
+  .wire-route .endpoint-from { color: #15803d; font-weight: 700; }
+  .wire-route .endpoint-to { color: #c2410c; font-weight: 700; }
+  [data-theme="dark"] .wire-route .endpoint-from { color: #86efac; }
+  [data-theme="dark"] .wire-route .endpoint-to { color: #fdba74; }
+  .wire-route .wire-hole { @apply text-base sm:text-lg; }
+  .wire-route-arrow { @apply text-2xl text-slate-400; }
+  .wire-step-navigation { @apply mt-3 flex items-center justify-between gap-2; }
+  .wire-step-navigation > span { @apply text-sm font-semibold text-slate-500; }
+  .wire-step-navigation button { @apply inline-flex min-h-11 items-center gap-1 rounded-lg border border-sky-200 px-3 py-2 text-sm font-semibold text-sky-800 disabled:opacity-30; }
+  .wire-step-navigation button:last-child { @apply bg-sky-700 text-white; }
+  [data-theme="dark"] .wire-step-navigation button:last-child { color: #082f49; }
+  [data-theme="dark"] :is(.picture-modes, .picture-step-controls, .connection-options) button[aria-pressed="true"] { background: #0369a1; border-color: #0369a1; color: #ffffff; }
+  .connection-guide .breadboard-example { @apply mt-4; }
+  .connection-wire-details .wire-list { @apply mt-4; }
+  .connection-details.wiring-parts { @apply bg-transparent p-0; }
 }

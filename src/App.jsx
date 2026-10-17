@@ -18,7 +18,7 @@ export default function App() {
         "/components": "Components Library",
         "/equipment": "Equipment Guide",
       }[pathname] ?? "ไม่พบหน้า";
-    document.title = `${title} | CircuitAI`;
+    document.title = `${title} | CircuitLib`;
     window.scrollTo(0, 0);
     if (previousPath.current !== pathname)
       mainRef.current?.focus({ preventScroll: true });
